@@ -18,6 +18,7 @@ class TboTechnologyHttp {
             )
         );
         $this->config = array_replace_recursive($defaultConfig, $config);
+        //print_r($this->config); exit;
         $this->http = new Client($this->config);
     }
 }
