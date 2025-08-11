@@ -20,12 +20,28 @@ $apiHotel
     ->generateCredencial();
 
 try{
-    //$responseCountryList = $apiHotel->countryList();
-    //var_dump($responseCountryList);
-    $responseListCity = $apiHotel->cityList([
-        "CountryCode" => "BR"
+    //$responseListCity = $apiHotel->cityList([ "CountryCode" => "BR", ]);
+    $responseSearchRooms = $apiHotel->searchRoomsInCity([
+        'CountryCode' => 'BR',
+        'VariationsCitiesSearched' => [
+            'Presidente Prudente',
+            'Pres. Prudente',
+        ],
+        'CheckIn' => '2025-08-12',
+        'CheckOut' => '2025-08-13',
+        'Nationality' => 'BR',
+        'PaxRooms' => [
+            [
+                'Adults' => 2,
+                'Children' => 0,
+                'ChildrenAges' => []
+            ]
+        ],
+        'Filters' => [
+            'Refundable' => true
+        ],
     ]);
-    var_dump($responseListCity);
+    var_dump($responseSearchRooms);
 }catch (\TboTechnology\Exceptions\TboTechnologyException $ex) {
     var_dump($ex);
 }

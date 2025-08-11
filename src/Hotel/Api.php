@@ -326,4 +326,75 @@ class Api extends \TboTechnology\Core\TboHolidaysHotel {
             throw new \TboTechnology\Exceptions\TboTechnologyException($ex);
         }
     }
+
+    public function searchRoomsInCity(Array $body) {
+        try{
+            $responseData = null;
+            $responseListCity = $this->cityList([
+                "CountryCode" => $body['CountryCode'],
+            ]);
+            $busca = $body['VariationsCitiesSearched'];
+            $result = null;
+            if($responseListCity->Status->Code == 200) {
+                foreach ($responseListCity->CityList as $city) {
+                    if (in_array($city->Name, $busca)) {
+                        $result = $city;
+                        break;
+                    }
+                }
+                if ($result) {
+                    //var_dump($result);
+                    $code = $result->Code;
+                    $responseHotelCodeList = $this->tboHotelCodeList([
+                        "CityCode" => $code,
+                        "IsDetailedResponse" => true,
+                    ]);
+                    if($responseHotelCodeList->Status->Code == 200) {
+                        $hotels = [];
+                        foreach ($responseHotelCodeList->Hotels as $hotel) {
+                            $hotels[] = $hotel->HotelCode;
+                        }
+                        $responseData = $this->searchRooms([
+                            "CheckIn" => $body['CheckIn'],
+                            "CheckOut" => $body['CheckOut'],
+                            "HotelCodes" => implode(", ", $hotels),
+                            "GuestNationality" => $body['Nationality'],
+                            "PaxRooms" => $body['PaxRooms'],
+                            "ResponseTime" => 18,
+                            "IsDetailedResponse" => true,
+                            "Filters" => $body['Filters']
+                        ]);
+                    }else{
+                        $responseData = $responseHotelCodeList->Status;
+                    }
+                }else {
+                    $responseData = [
+                        "Status" => "Error",
+                        "Code" => ""
+                    ];
+                }
+            }else{
+                $responseData = $responseListCity->Status;
+            }
+            return $responseData;
+        } catch (\GuzzleHttp\Exception\ServerException $ex) {
+
+            throw \TboTechnology\Exceptions\TboTechnologyException::fromGuzzleException($ex);
+
+        } catch (\GuzzleHttp\Exception\ClientException $ex) {
+
+            throw \TboTechnology\Exceptions\TboTechnologyException::fromGuzzleException($ex);
+
+        } catch (\GuzzleHttp\Exception\BadResponseException $ex) {
+
+            throw \TboTechnology\Exceptions\TboTechnologyException::fromGuzzleException($ex);
+
+        } catch (\GuzzleHttp\Exception\RequestException $ex) {
+
+            throw \TboTechnology\Exceptions\TboTechnologyException::fromGuzzleException($ex);
+
+        } catch (\Exception $ex) {
+            throw new \TboTechnology\Exceptions\TboTechnologyException($ex);
+        }
+    }
 }
