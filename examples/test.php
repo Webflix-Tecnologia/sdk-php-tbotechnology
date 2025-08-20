@@ -33,8 +33,8 @@ try{
         'PaxRooms' => [
             [
                 'Adults' => 2,
-                'Children' => 0,
-                'ChildrenAges' => []
+                'Children' => 2,
+                'ChildrenAges' => [10, 12]
             ]
         ],
         'Filters' => [
