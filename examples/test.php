@@ -34,7 +34,7 @@ try{
             [
                 'Adults' => 2,
                 'Children' => 2,
-                'ChildrenAges' => [10, 12]
+                //'ChildrenAges' => [10, 12]
             ]
         ],
         'Filters' => [
